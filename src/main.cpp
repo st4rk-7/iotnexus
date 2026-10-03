@@ -1,16 +1,58 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <PubSubClient.h>
 #include "secrets.h"
 
 const int RELAY_PIN = 4;
-const uint8_t RELAY_ON = LOW; // active-LOW relay module
+const uint8_t RELAY_ON = LOW;   // active-LOW relay module
+const uint8_t RELAY_OFF = HIGH;
+
+const char *TOPIC_CMD = "iotnexus/valve/cmd";        // send OPEN or CLOSE
+const char *TOPIC_STATE = "iotnexus/valve/state";    // OPEN / CLOSED
+const char *TOPIC_STATUS = "iotnexus/device/status"; // online / offline
 
 const unsigned long WIFI_RETRY_MS = 10000;
-const unsigned long STATUS_PRINT_MS = 10000;
+const unsigned long MQTT_RETRY_MS = 5000;
 
+WiFiClient net;
+PubSubClient mqtt(net);
+
+bool valveOpen = false;
 unsigned long lastWifiAttempt = 0;
-unsigned long lastStatusPrint = 0;
+unsigned long lastMqttAttempt = 0;
 bool wasConnected = false;
+
+void publishState()
+{
+  mqtt.publish(TOPIC_STATE, valveOpen ? "OPEN" : "CLOSED", true);
+}
+
+void setValve(bool open, const char *reason)
+{
+  if (open == valveOpen)
+    return;
+  valveOpen = open;
+  digitalWrite(RELAY_PIN, open ? RELAY_ON : RELAY_OFF);
+  Serial.printf("[VALVE] %s (%s)\n", open ? "OPEN" : "CLOSED", reason);
+  if (mqtt.connected())
+    publishState();
+}
+
+void onMessage(char *topic, byte *payload, unsigned int length)
+{
+  String cmd;
+  for (unsigned int i = 0; i < length; i++)
+    cmd += (char)payload[i];
+  cmd.trim();
+  cmd.toUpperCase();
+
+  if (cmd == "OPEN")
+    setValve(true, "mqtt command");
+  else if (cmd == "CLOSE")
+    setValve(false, "mqtt command");
+  else
+    Serial.printf("[MQTT] unknown command: %s\n", cmd.c_str());
+}
 
 void maintainWifi()
 {
@@ -32,10 +74,35 @@ void maintainWifi()
   WiFi.reconnect();
 }
 
+void maintainMqtt()
+{
+  if (WiFi.status() != WL_CONNECTED || mqtt.connected())
+    return;
+  if (millis() - lastMqttAttempt < MQTT_RETRY_MS)
+    return;
+  lastMqttAttempt = millis();
+
+  String clientId = "iotnexus-" + String((uint32_t)ESP.getEfuseMac(), HEX);
+  Serial.printf("[MQTT] connecting to %s as %s\n", MQTT_HOST, clientId.c_str());
+
+  // Last will: broker publishes "offline" if the ESP32 disappears without closing cleanly
+  if (mqtt.connect(clientId.c_str(), TOPIC_STATUS, 1, true, "offline"))
+  {
+    Serial.println("[MQTT] connected");
+    mqtt.publish(TOPIC_STATUS, "online", true);
+    mqtt.subscribe(TOPIC_CMD);
+    publishState();
+  }
+  else
+  {
+    Serial.printf("[MQTT] failed, state=%d\n", mqtt.state());
+  }
+}
+
 void setup()
 {
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, RELAY_ON); // valve open, as before
+  digitalWrite(RELAY_PIN, RELAY_OFF); // valve closed until commanded
 
   Serial.begin(115200);
   delay(200);
@@ -45,16 +112,15 @@ void setup()
   WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   lastWifiAttempt = millis();
+
+  mqtt.setServer(MQTT_HOST, MQTT_PORT);
+  mqtt.setCallback(onMessage);
+  mqtt.setSocketTimeout(5);
 }
 
 void loop()
 {
   maintainWifi();
-
-  if (millis() - lastStatusPrint >= STATUS_PRINT_MS)
-  {
-    lastStatusPrint = millis();
-    Serial.printf("[STATUS] uptime %lu s, WiFi %s\n", millis() / 1000,
-                  WiFi.status() == WL_CONNECTED ? "up" : "down");
-  }
+  maintainMqtt();
+  mqtt.loop();
 }
