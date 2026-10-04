@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="560" viewBox="0 0 1240 560" font-family="DejaVu Sans, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+  <rect width="1240" height="560" fill="#ffffff"/>
+  <text x="40" y="50" font-size="24" font-weight="bold" fill="#111">IoTNexus — System Architecture</text>
+  <text x="40" y="76" font-size="14" fill="#555">Edge device ↔ Wi-Fi ↔ MQTT broker ↔ user client</text>
+
+  <!-- Layer labels -->
+  <text x="40" y="118" font-size="13" font-weight="bold" fill="#888">EDGE</text>
+  <text x="560" y="118" font-size="13" font-weight="bold" fill="#888">NETWORK</text>
+  <text x="760" y="118" font-size="13" font-weight="bold" fill="#888">BROKER</text>
+  <text x="1010" y="118" font-size="13" font-weight="bold" fill="#888">USER</text>
+
+  <!-- Edge device group -->
+  <rect x="30" y="155" width="500" height="305" rx="10" fill="#f7f9fc" stroke="#9fb3d1" stroke-width="2" stroke-dasharray="6,4"/>
+
+  <rect x="60" y="170" width="200" height="140" rx="8" fill="#eef4ff" stroke="#2b4c8c" stroke-width="2"/>
+  <text x="160" y="200" font-size="16" font-weight="bold" text-anchor="middle">ESP32-S3</text>
+  <text x="160" y="224" font-size="12" text-anchor="middle" fill="#333">Wi-Fi auto-reconnect</text>
+  <text x="160" y="244" font-size="12" text-anchor="middle" fill="#333">MQTT client (PubSubClient)</text>
+  <text x="160" y="264" font-size="12" text-anchor="middle" fill="#333">Failsafe timers</text>
+  <text x="160" y="284" font-size="12" text-anchor="middle" fill="#333">Closed on boot</text>
+
+  <rect x="320" y="170" width="190" height="80" rx="8" fill="#fff6e8" stroke="#a8641a" stroke-width="2"/>
+  <text x="415" y="202" font-size="16" font-weight="bold" text-anchor="middle">Relay module</text>
+  <text x="415" y="224" font-size="12" text-anchor="middle" fill="#333">active-LOW, isolates 12 V</text>
+
+  <rect x="320" y="330" width="190" height="100" rx="8" fill="#eaf6ef" stroke="#2a7d4f" stroke-width="2"/>
+  <text x="415" y="362" font-size="16" font-weight="bold" text-anchor="middle">Solenoid valve</text>
+  <text x="415" y="384" font-size="12" text-anchor="middle" fill="#333">12 V DC, pilot-operated</text>
+  <text x="415" y="404" font-size="12" text-anchor="middle" fill="#333">water out</text>
+
+  <rect x="60" y="340" width="200" height="80" rx="8" fill="#f1f1f1" stroke="#444" stroke-width="2"/>
+  <text x="160" y="372" font-size="16" font-weight="bold" text-anchor="middle">12 V adapter</text>
+  <text x="160" y="394" font-size="12" text-anchor="middle" fill="#333">1 A, valve power only</text>
+
+  <line x1="260" y1="210" x2="318" y2="210" stroke="#f18f01" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="289" y="202" font-size="11" text-anchor="middle" fill="#c26f00">GPIO4</text>
+  <line x1="415" y1="250" x2="415" y2="328" stroke="#1d6fd6" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="425" y="294" font-size="11" fill="#1d6fd6">switched 12 V</text>
+  <line x1="260" y1="380" x2="318" y2="380" stroke="#d62828" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Network -->
+  <rect x="560" y="190" width="150" height="80" rx="8" fill="#fdf0f6" stroke="#9c3d74" stroke-width="2"/>
+  <text x="635" y="225" font-size="16" font-weight="bold" text-anchor="middle">Wi-Fi AP</text>
+  <text x="635" y="247" font-size="12" text-anchor="middle" fill="#333">router / hotspot</text>
+  <line x1="260" y1="230" x2="290" y2="230" stroke="#333" stroke-width="0"/>
+  <polyline points="160,168 160,140 635,140 635,188" fill="none" stroke="#333" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <text x="400" y="133" font-size="12" text-anchor="middle" fill="#333">Wi-Fi (TCP/IP)</text>
+
+  <!-- Broker -->
+  <rect x="760" y="170" width="200" height="120" rx="8" fill="#f2efff" stroke="#5a48b0" stroke-width="2"/>
+  <text x="860" y="205" font-size="16" font-weight="bold" text-anchor="middle">MQTT broker</text>
+  <text x="860" y="227" font-size="12" text-anchor="middle" fill="#333">broker.hivemq.com</text>
+  <text x="860" y="247" font-size="12" text-anchor="middle" fill="#333">port 1883 (demo)</text>
+  <text x="860" y="267" font-size="12" text-anchor="middle" fill="#333">retained state + last will</text>
+  <line x1="712" y1="230" x2="758" y2="230" stroke="#333" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <text x="735" y="220" font-size="11" text-anchor="middle" fill="#333">internet</text>
+
+  <!-- User -->
+  <rect x="1010" y="170" width="200" height="120" rx="8" fill="#eefaf9" stroke="#2a8c86" stroke-width="2"/>
+  <text x="1110" y="205" font-size="16" font-weight="bold" text-anchor="middle">MQTT client</text>
+  <text x="1110" y="227" font-size="12" text-anchor="middle" fill="#333">HiveMQ web client /</text>
+  <text x="1110" y="247" font-size="12" text-anchor="middle" fill="#333">MQTT Explorer / phone app</text>
+  <line x1="962" y1="230" x2="1008" y2="230" stroke="#333" stroke-width="2" marker-end="url(#arr)" marker-start="url(#arr)"/>
+
+  <!-- Topics -->
+  <rect x="560" y="330" width="650" height="130" rx="8" fill="#fafafa" stroke="#bbb" stroke-width="1.5"/>
+  <text x="580" y="358" font-size="14" font-weight="bold" fill="#111">MQTT topics</text>
+  <text x="580" y="384" font-size="13" fill="#222" font-family="DejaVu Sans Mono, monospace">iotnexus/valve/cmd      ← OPEN | CLOSE        (user → device)</text>
+  <text x="580" y="408" font-size="13" fill="#222" font-family="DejaVu Sans Mono, monospace">iotnexus/valve/state    → OPEN | CLOSED       (device → user, retained)</text>
+  <text x="580" y="432" font-size="13" fill="#222" font-family="DejaVu Sans Mono, monospace">iotnexus/device/status  → online | offline    (retained, last will)</text>
+
+  <!-- Failsafe note -->
+  <text x="40" y="500" font-size="13" fill="#222">Failsafe: valve closes if MQTT is unreachable for &gt; 10 s, or after 10 min open. Valve is closed on every boot.</text>
+</svg>
