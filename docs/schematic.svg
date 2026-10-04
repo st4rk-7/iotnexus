@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="720" viewBox="0 0 1240 720" font-family="DejaVu Sans, Arial, sans-serif">
+  <rect width="1240" height="720" fill="#ffffff"/>
+  <text x="40" y="50" font-size="24" font-weight="bold" fill="#111">IoTNexus — Valve Control Wiring</text>
+  <text x="40" y="76" font-size="14" fill="#555">ESP32-S3 → active-LOW relay → 12 V solenoid valve</text>
+
+  <!-- ESP32 -->
+  <rect x="40" y="120" width="230" height="300" rx="8" fill="#eef4ff" stroke="#2b4c8c" stroke-width="2"/>
+  <text x="155" y="150" font-size="16" font-weight="bold" text-anchor="middle" fill="#111">ESP32-S3</text>
+  <text x="155" y="170" font-size="12" text-anchor="middle" fill="#555">DevKitC-1 (USB powered)</text>
+  <text x="258" y="205" font-size="14" text-anchor="end" fill="#111">5V</text>
+  <text x="258" y="275" font-size="14" text-anchor="end" fill="#111">GND</text>
+  <text x="258" y="345" font-size="14" text-anchor="end" fill="#111">GPIO4</text>
+
+  <!-- Relay module -->
+  <rect x="450" y="120" width="250" height="300" rx="8" fill="#fff6e8" stroke="#a8641a" stroke-width="2"/>
+  <text x="575" y="150" font-size="16" font-weight="bold" text-anchor="middle" fill="#111">Relay module</text>
+  <text x="575" y="170" font-size="12" text-anchor="middle" fill="#555">1-ch, active-LOW input</text>
+  <text x="462" y="205" font-size="14" fill="#111">VCC</text>
+  <text x="462" y="275" font-size="14" fill="#111">GND</text>
+  <text x="462" y="345" font-size="14" fill="#111">IN</text>
+  <text x="688" y="172" font-size="14" text-anchor="end" fill="#111">NO</text>
+  <text x="688" y="340" font-size="14" text-anchor="end" fill="#111">COM</text>
+  <text x="688" y="405" font-size="14" text-anchor="end" fill="#999">NC (unused)</text>
+  <!-- contact symbol -->
+  <line x1="600" y1="350" x2="700" y2="350" stroke="#111" stroke-width="2"/>
+  <circle cx="600" cy="350" r="4" fill="#111"/>
+  <line x1="600" y1="350" x2="628" y2="215" stroke="#111" stroke-width="2"/>
+  <circle cx="630" cy="200" r="4" fill="none" stroke="#111" stroke-width="2"/>
+  <polyline points="630,196 630,180 700,180" fill="none" stroke="#111" stroke-width="2"/>
+
+  <!-- Low-voltage wires -->
+  <line x1="270" y1="200" x2="450" y2="200" stroke="#d62828" stroke-width="3"/>
+  <line x1="270" y1="270" x2="450" y2="270" stroke="#222" stroke-width="3"/>
+  <line x1="270" y1="340" x2="450" y2="340" stroke="#f18f01" stroke-width="3"/>
+  <text x="360" y="192" font-size="12" text-anchor="middle" fill="#d62828">5 V *</text>
+  <text x="360" y="262" font-size="12" text-anchor="middle" fill="#222">GND</text>
+  <text x="360" y="332" font-size="12" text-anchor="middle" fill="#c26f00">control signal</text>
+
+  <!-- Valve: coil between V+ and V- -->
+  <rect x="870" y="110" width="290" height="190" rx="8" fill="none" stroke="#2a7d4f" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="1015" y="135" font-size="15" font-weight="bold" text-anchor="middle" fill="#111">Solenoid valve 12 V DC</text>
+  <text x="1015" y="153" font-size="12" text-anchor="middle" fill="#555">pilot-operated (Sheng NG)</text>
+  <line x1="900" y1="180" x2="950" y2="180" stroke="#111" stroke-width="2"/>
+  <path d="M950 180 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0 a10 10 0 0 1 20 0" fill="none" stroke="#111" stroke-width="2"/>
+  <line x1="1070" y1="180" x2="1120" y2="180" stroke="#111" stroke-width="2"/>
+  <text x="1010" y="205" font-size="12" text-anchor="middle" fill="#555">coil</text>
+  <text x="900" y="172" font-size="13" text-anchor="middle" fill="#111">V+</text>
+  <text x="1120" y="172" font-size="13" text-anchor="middle" fill="#111">V−</text>
+
+  <!-- Flyback diode in parallel: cathode (bar) toward V+ -->
+  <line x1="900" y1="180" x2="900" y2="260" stroke="#111" stroke-width="2"/>
+  <line x1="1120" y1="180" x2="1120" y2="260" stroke="#111" stroke-width="2"/>
+  <line x1="900" y1="260" x2="995" y2="260" stroke="#111" stroke-width="2"/>
+  <line x1="1025" y1="260" x2="1120" y2="260" stroke="#111" stroke-width="2"/>
+  <polygon points="1025,248 1025,272 999,260" fill="#111"/>
+  <line x1="997" y1="246" x2="997" y2="274" stroke="#111" stroke-width="3"/>
+  <text x="1010" y="290" font-size="12" text-anchor="middle" fill="#111">1N4007 flyback (planned)</text>
+  <circle cx="900" cy="180" r="4" fill="#111"/>
+  <circle cx="1120" cy="180" r="4" fill="#111"/>
+  <circle cx="1120" cy="260" r="4" fill="#111"/>
+
+  <!-- 12 V adapter -->
+  <rect x="890" y="440" width="270" height="110" rx="8" fill="#f1f1f1" stroke="#444" stroke-width="2"/>
+  <text x="1025" y="495" font-size="16" font-weight="bold" text-anchor="middle" fill="#111">12 V DC adapter</text>
+  <text x="1025" y="515" font-size="12" text-anchor="middle" fill="#555">1 A, separate from ESP32</text>
+  <text x="940" y="465" font-size="14" text-anchor="middle" fill="#d62828">+</text>
+  <text x="1120" y="465" font-size="14" text-anchor="middle" fill="#222">−</text>
+
+  <!-- High-voltage side wires -->
+  <line x1="700" y1="180" x2="900" y2="180" stroke="#1d6fd6" stroke-width="3"/>
+  <text x="800" y="172" font-size="12" text-anchor="middle" fill="#1d6fd6">switched +12 V</text>
+  <polyline points="700,350 940,350 940,440" fill="none" stroke="#d62828" stroke-width="3"/>
+  <text x="800" y="342" font-size="12" text-anchor="middle" fill="#d62828">+12 V</text>
+  <line x1="1120" y1="260" x2="1120" y2="440" stroke="#222" stroke-width="3"/>
+  <text x="1130" y="380" font-size="12" fill="#222">12 V −</text>
+
+  <!-- Notes -->
+  <text x="40" y="480" font-size="15" font-weight="bold" fill="#111">Notes</text>
+  <text x="40" y="505" font-size="13" fill="#222">• GPIO4 LOW → relay ON → valve OPEN (active-LOW). GPIO4 HIGH → valve CLOSED.</text>
+  <text x="40" y="528" font-size="13" fill="#222">• 12 V circuit is isolated from the ESP32 by the relay contacts; grounds are not shared.</text>
+  <text x="40" y="551" font-size="13" fill="#222">• * Relay VCC: use the voltage printed on your module (5 V shown).</text>
+  <text x="40" y="574" font-size="13" fill="#222">• Diode stripe (cathode) goes to the valve V+ side.</text>
+  <text x="40" y="597" font-size="13" fill="#222">• Fit the valve following the flow arrow on its body.</text>
+  <text x="40" y="620" font-size="13" fill="#222">• Needs inlet pressure to open; household tap pressure was not enough in testing.</text>
+</svg>
