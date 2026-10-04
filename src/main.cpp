@@ -13,11 +13,15 @@ const char *TOPIC_STATUS = "iotnexus/device/status"; // online / offline
 
 const unsigned long WIFI_RETRY_MS = 10000;
 const unsigned long MQTT_RETRY_MS = 5000;
+const unsigned long FAILSAFE_MS = 10000;                // close valve after 10 s offline
+const unsigned long MAX_OPEN_MS = 10UL * 60UL * 1000UL; // never stay open > 10 min
 
 WiFiClient net;
 PubSubClient mqtt(net);
 
 bool valveOpen = false;
+unsigned long openedAt = 0;
+unsigned long lastOnline = 0;
 unsigned long lastWifiAttempt = 0;
 unsigned long lastMqttAttempt = 0;
 bool wasConnected = false;
@@ -33,6 +37,8 @@ void setValve(bool open, const char *reason)
     return;
   valveOpen = open;
   digitalWrite(RELAY_PIN, open ? RELAY_ON : RELAY_OFF);
+  if (open)
+    openedAt = millis();
   Serial.printf("[VALVE] %s (%s)\n", open ? "OPEN" : "CLOSED", reason);
   if (mqtt.connected())
     publishState();
@@ -99,6 +105,19 @@ void maintainMqtt()
   }
 }
 
+void checkFailsafe()
+{
+  unsigned long now = millis();
+
+  if (mqtt.connected())
+    lastOnline = now;
+  else if (valveOpen && now - lastOnline > FAILSAFE_MS)
+    setValve(false, "failsafe: connection lost");
+
+  if (valveOpen && now - openedAt > MAX_OPEN_MS)
+    setValve(false, "failsafe: max open time");
+}
+
 void setup()
 {
   pinMode(RELAY_PIN, OUTPUT);
@@ -116,6 +135,8 @@ void setup()
   mqtt.setServer(MQTT_HOST, MQTT_PORT);
   mqtt.setCallback(onMessage);
   mqtt.setSocketTimeout(5);
+
+  lastOnline = millis();
 }
 
 void loop()
@@ -123,4 +144,5 @@ void loop()
   maintainWifi();
   maintainMqtt();
   mqtt.loop();
+  checkFailsafe();
 }
